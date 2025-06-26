@@ -1,6 +1,11 @@
 import React from "react";
+import { IoMdEyeOff, IoMdEye } from "react-icons/io";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const SignupPage = () => {
+const SignupForm = ({setIsLoggedIn}) => {
+
+    const navigate = useNavigate();
 
     const [formData, setFormData] = React.useState({
         firstName: "",
@@ -18,7 +23,29 @@ const SignupPage = () => {
         }));
     }
 
+    function submitHandler(event){
+        event.preventDefault();
+        if(formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+
+        setIsLoggedIn(true); // Assuming setIsLoggedIn is a function to update the login state
+        toast.success("Account Created Successfully");
+        navigate("/dashboard"); // Redirect to dashboard or another page
+        // Reset form after submission
+        setFormData({
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+        });
+        
+    }
+
     const [showPassword, setShowPassword] = React.useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
     return(
         <div>
@@ -32,7 +59,7 @@ const SignupPage = () => {
                 </button>
             </div>
 
-            <form>
+            <form onSubmit={submitHandler}>
                 <div>
                         <label>
                         <p>First Name<sup>*</sup></p>
@@ -96,7 +123,7 @@ const SignupPage = () => {
                     <lable>
                         <p>Confirm Password<sup>*</sup></p>
                         <input
-                        type={showPassword ? "text" : "password"}
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm Password"
                         name="confirmPassword"
                         value={formData.confirmPassword}
@@ -104,14 +131,14 @@ const SignupPage = () => {
                         required
                         ></input>
                         <span>
-                                    {showPassword ? (
+                                    {showConfirmPassword ? (
                                     <IoMdEye
-                                        onClick={() => setShowPassword(false)}
+                                        onClick={() => setShowConfirmPassword(false)}
                                         className="cursor-pointer"
                                     />
                                     ) : (
                                     <IoMdEyeOff
-                                        onClick={() => setShowPassword(true)}
+                                        onClick={() => setShowConfirmPassword(true)}
                                         className="cursor-pointer"
                                     />
                                     )}
@@ -125,4 +152,4 @@ const SignupPage = () => {
     )
 }
 
-export default SignupPage;
+export default SignupForm;
